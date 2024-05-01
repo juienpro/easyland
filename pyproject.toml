@@ -1,0 +1,35 @@
+[project]
+name = "easyland"
+version = "0.7.0"
+authors = [
+    { name="Julien Pro", email="contact@julienpro.com"}
+]
+description = "A python swiss-knife to manage wayand compositors like Hyprland and Sway"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pywayland>=0.4.17"
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Operating System",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Desktop Environment"
+]
+
+[project.urls]
+Homepage = "https://github.com/juienpro/easyland"
+Issues = "https://github.com/juienpro/easyland/issues"
+
+[project.scripts]
+easyland = "easyland.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
