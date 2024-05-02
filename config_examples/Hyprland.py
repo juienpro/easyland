@@ -55,8 +55,8 @@ def on_PrepareForSleep(payload):
 def set_monitors():
     logger.info('Setting monitors')
     if command.hyprland_get_monitor(description="HP 22es") is not None:
-        command.exec('hyprctl keyword monitor "eDP-1,preferred,auto,2"')
-        # command.exec('hyprctl keyword monitor "eDP-1,disable"')
+        # command.exec('hyprctl keyword monitor "eDP-1,preferred,auto,2"')
+        command.exec('hyprctl keyword monitor "eDP-1,disable"')
     else:
         command.exec('hyprctl keyword monitor "eDP-1,preferred,auto,2"')
         command.exec("brightnessctl -s set 0")
