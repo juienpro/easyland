@@ -11,21 +11,23 @@ class Daemon():
 
     def __init__(self, config):
         self.config = config 
-        listeners = self.get_listeners()
+        self.listeners = self.get_listeners()
+        listener_names = self.listeners.keys()
+
         logger.info('Starting easyland daemon')
 
-        if 'hyprland' in listeners:
+        if 'hyprland' in listener_names:
             hyprland_thread = threading.Thread(target=self.launch_hyprland_daemon)
             hyprland_thread.daemon = True
             hyprland_thread.start()
 
-        if 'sway' in listeners: 
-            if not hasattr(self.config, 'sway_event_types'):
+        if 'sway' in listener_names: 
+            if not 'event_types' in self.listeners['sway']:
                 logger.error('No sway event types defined for Sway listeners in the config file')
                 sys.exit(1)
             existing_types = ['workspace', 'window', 'output', 'mode', 'barconfig_update', 'binding', 'shutdown', 'tick', 'bar_state_update', 'input']
-            sway_threads = [None] * len(self.config.sway_event_types)
-            for idx, event_type in enumerate(self.config.sway_event_types):
+            sway_threads = [None] * len(self.listeners['sway']['event_types'])
+            for idx, event_type in enumerate(self.listeners['sway']['event_types']):
                 if event_type not in existing_types:
                     logger.error('Sway - Invalid event type: ' + event_type)
                     sys.exit(1)
@@ -33,12 +35,12 @@ class Daemon():
                 sway_threads[idx].daemon = True
                 sway_threads[idx].start()
 
-        if 'systemd_logind' in listeners:
+        if 'systemd_logind' in listener_names:
             systemd_thread = threading.Thread(target=self.launch_systemd_login_daemon)
             systemd_thread.daemon = True
             systemd_thread.start()
 
-        if 'idle' in listeners:
+        if 'idle' in listener_names:
             if callable(getattr(self.config, 'idle_config', None)):
                 idle_thread = threading.Thread(target=self.launch_idle_daemon)
                 idle_thread.daemon = True
@@ -66,7 +68,8 @@ class Daemon():
 
     def launch_hyprland_daemon(self):
         logger.info('Launching hyprland daemon')
-        cmd = "socat -U - UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+        socket = self.listeners['hyprland'].get('socket_path', '/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock')
+        cmd = "socat -U - UNIX-CONNECT:"+socket
         ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         while True:
             for line in iter(ps.stdout.readline, ""):
@@ -88,6 +91,8 @@ class Daemon():
                     self.call_handler('on_sway_event_' + event_type, json_output)
                 except json.decoder.JSONDecodeError:
                     logger.error('Sway daemon: Invalid JSON: '+ decoded_line)
+                    logger.error('Sway daemon: Exiting')
+                    return
 
     def launch_systemd_login_daemon(self):
         logger.info('Launching systemd daemon')

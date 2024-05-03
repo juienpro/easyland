@@ -1,4 +1,19 @@
 
+## v0.7.2  (2024-05-03) 
+
+- Added the possibility to change the path of the Hyprland socket
+- Better parameters definition for Listeners
+- Minor changes
+
+## v0.7.1  (2024-05-02) 
+
+- Minor changes (docs and config examples)
+
+## v0.7.0 (2024-05-02) 
+
+- Full rewrite
+- Implementation of a real Wayland Idle system
+
 ## v0.6 (2024-04-26) 
 
 - Added support for background shell commands by adding & at the end of the command. Should fix the issue with hyprlock that blocks a thread.

@@ -6,6 +6,12 @@ from easyland import logger, command
 
 listeners = ['hyprland', 'systemd_logind', 'idle']
 
+listeners = {
+    "hyprland": { "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" },
+    'systemd_logind': {},
+    'idle': {}
+}
+
 def init():
     set_monitors()
 

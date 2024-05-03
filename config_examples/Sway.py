@@ -1,9 +1,12 @@
 from easyland import logger, command
 
-listeners = ['sway', 'systemd_logind', 'idle']
-
-sway_event_types = ['workspace', 'window']
-
+listeners = {
+    "sway": {
+        "event_types": ['workspace', 'window']
+    },
+    'systemd_logind': {},
+    'idle': {}
+}
 
 ###############################################################################
 # Idle configuration

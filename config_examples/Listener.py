@@ -1,8 +1,10 @@
 from easyland import logger
 
-
-listeners = ['hyprland', 'systemd_logind', 'idle']
-
+listeners = {
+    "hyprland": {},
+    'systemd_logind': {},
+    'idle': {}
+}
 
 def idle_config():
     return [

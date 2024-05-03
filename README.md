@@ -26,7 +26,21 @@ By scripting my Desktop in Python, I have more control to implement what I want.
 
 ## Installation
 
+1. Install Easyland in a python environment
+
+```
+pip3 -i easyland
+```
+
+2. Copy an example of configuration files from [here](https://github.com/juienpro/easyland/tree/main/config_examples)
+
+3. Modify it according to your needs
+
+4. Launch `easyland -c <path_to_your_config_file`
+
+
 This program needs the following external tools: 
+
 - The `socat` binary ([Arch](https://archlinux.org/packages/extra/x86_64/socat/))
 - The `gdbus` binary ([Arch](https://archlinux.org/packages/core/x86_64/glib2/))
 
@@ -62,7 +76,15 @@ from easyland import logger, command
 # Set active listeners
 ###############################################################################
 
-listeners = ['hyprland', 'systemd_logind', 'idle']
+listeners = {
+    "hyprland": { "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" },
+    'systemd_logind': {},
+    'idle': {}
+}
+
+###############################################################################
+# Method executed at start 
+###############################################################################
 
 def init():
     set_monitors()
@@ -90,7 +112,7 @@ def on_hyprland_event(event, argument):
         set_monitors()
 
 ###############################################################################
-# Handlers of Systemd logind eventz
+# Handlers of Systemd logind events
 ###############################################################################
 
 def on_PrepareForSleep(payload):
@@ -136,7 +158,11 @@ Easyland has helper tools to log everything (console and file) and execute comma
 #### Configure listeners
 
 ```
-listeners = ['hyprland', 'systemd_logind', 'idle']
+listeners = {
+    "hyprland": { "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" },
+    'systemd_logind': {},
+    'idle': {}
+}
 ```
 
 The listeners to launch at the startup. There are currently three listeners: 
@@ -144,6 +170,7 @@ The listeners to launch at the startup. There are currently three listeners:
 - `systemd_logind` to monitor for Systemd Logind events
 - `idle` which allows you to react when your computer has no activity
 
+Each one can take take on or more parameters. See reference below.
 
 #### Configure Idling
 
@@ -215,7 +242,7 @@ def on_Unlock():
     logger.info("Unlocking the screen")
 ```
 
-To receive the Systemd `Unlock` signal, you should launch your screen locker with the following command: `hyprlock && loginctl unlock-session`, so Systemd will launch the `Unlock` signal when the screen is unlocked.
+To receive the Systemd `Unlock` signal, you should launch your screen locker with the following command: `hyprlock && loginctl unlock-session`, so Systemd will send the `Unlock` signal when the screen is unlocked.
 
 For locking, keep in mind that `hyprlock` and `swaylock` do not listen for the Systemd `Lock` event, so you need to it manually. 
 
@@ -229,7 +256,7 @@ def on_Lock():
 
 #### Alternative to on_WhateverSignal method
 
-Alternatively to write several methods to listen for Systemd events, you can also define method `on_systemd_event` and test the signal to achieve what you want:
+Alternatively to write several methods to listen for Systemd events, you can also define method `on_systemd_event` and add a condition to achieve what you want:
 
 ```
 def on_systemd_event(sender, signal, payload)
@@ -240,6 +267,24 @@ def on_systemd_event(sender, signal, payload)
 ```
 
 ## References
+
+### Listeners parameters
+
+#### Hyprland listener parameters
+
+- `socket_path`: The path of the Hyprland IPC socket
+
+#### Sway listener parameters
+
+- `event_types`: The type of events to be listened for
+
+#### Idle listener parameters
+
+None.
+
+#### systemd_logind parameters
+
+None.
 
 ### Listeners handler methods
 
@@ -293,8 +338,8 @@ Keep in mind that these signals are independent from Wayland/Hyprland/Sway. My r
 
 ## Contributions
 
-- Integrating other DBUS services should be easy with Easyland (type `dbusctl` to list all avalable DBUS on your system). Do not hesitate to let know what you need.
-- Better tests for Sway. I use Hyprland so feel free to submit bugs if you are using Sway
+- Integrating other DBUS services should be easy with Easyland (type `dbusctl` to list all avalable DBUS on your system). Do not hesitate to let me know what you need.
+- Better tests for Sway. I use Hyprland so feel free to submit bugs if you are using Sway and see an issue.
 
 If you see some bugs or propose patches, feel free to contribute.
 
