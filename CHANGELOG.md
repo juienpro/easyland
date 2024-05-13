@@ -1,4 +1,9 @@
 
+## v0.7.5  (2024-05-13) 
+
+- Fix Hyprland socket path (support of Hyprland v0.4)
+- Better errors management in Hyprland IPC thread
+
 ## v0.7.4  (2024-05-13) 
 
 - Fix Wayland dispatcher 

@@ -8,7 +8,7 @@ import time
 import os
 from easyland.daemon import Daemon
 
-version = '0.7.4'
+version = '0.7.5'
 
 def import_from_path(path):
     module_name = os.path.basename(path).replace('-', '_').replace('.py', '')

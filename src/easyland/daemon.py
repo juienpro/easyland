@@ -68,10 +68,15 @@ class Daemon():
 
     def launch_hyprland_daemon(self):
         logger.info('Launching hyprland daemon')
-        socket = self.listeners['hyprland'].get('socket_path', '/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock')
+        socket = self.listeners['hyprland'].get('socket_path', '$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock')
         cmd = "socat -U - UNIX-CONNECT:"+socket
-        ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        # ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         while True:
+            if ps.returncode != 0:
+                err = ps.stderr.read().decode("utf-8")
+                logger.error("Error while listening to Hyprland socket: " + err)
+                sys.exit(1)
             for line in iter(ps.stdout.readline, ""):
                 self.last_event_time = time.time()
                 decoded_line = line.decode("utf-8")
