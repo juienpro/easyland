@@ -22,13 +22,17 @@ class Idle():
         self._seat = None
         self._notifications = []
 
+    # def _global_handler_init(self, reg, id_num, iface_name, version):
+    #     if iface_name == 'wl_seat':
+    #         self._seat = reg.bind(id_num, WlSeat, version)
+
     def _global_handler(self, reg, id_num, iface_name, version):
         if iface_name == 'wl_seat':
             self._seat = reg.bind(id_num, WlSeat, version)
-
-        elif iface_name == "ext_idle_notifier_v1":
+        if iface_name == "ext_idle_notifier_v1":
             self._idle_notifier = reg.bind(id_num, ExtIdleNotifierV1, version)
-    
+
+        if self._idle_notifier and self._seat:
             for idx, c in enumerate(self._config):
                 self._notifications.append(None)
                 self._notifications[idx] = self._idle_notifier.get_idle_notification(c[0] * 1000, self._seat)
@@ -54,5 +58,4 @@ class Idle():
         reg.dispatcher['global'] = self._global_handler
         while True:
             self._display.dispatch(block=True)
-
 

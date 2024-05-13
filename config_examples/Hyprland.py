@@ -4,8 +4,6 @@ from easyland import logger, command
 # Set active listeners
 ###############################################################################
 
-listeners = ['hyprland', 'systemd_logind', 'idle']
-
 listeners = {
     "hyprland": { "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" },
     'systemd_logind': {},
@@ -38,7 +36,7 @@ def on_hyprland_event(event, argument):
         set_monitors()
 
 ###############################################################################
-# Handlers of Systemd logind eventz
+# Handlers of Systemd logind events
 ###############################################################################
 
 def on_PrepareForSleep(payload):

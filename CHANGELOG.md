@@ -1,4 +1,12 @@
 
+## v0.7.4  (2024-05-13) 
+
+- Fix Wayland dispatcher 
+
+## v0.7.3  (2024-05-13) 
+
+- Fix listeners of Hyprland.py
+
 ## v0.7.2  (2024-05-03) 
 
 - Added the possibility to change the path of the Hyprland socket
