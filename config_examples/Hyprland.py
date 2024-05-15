@@ -5,7 +5,9 @@ from easyland import logger, command
 ###############################################################################
 
 listeners = {
-    "hyprland": { "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" },
+    "hyprland": { 
+        # "socket_path": "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" (For hyprland < 0.4)
+    },
     'systemd_logind': {},
     'idle': {}
 }
@@ -31,9 +33,20 @@ def idle_config():
 ###############################################################################
 
 def on_hyprland_event(event, argument):
-    if event in [ "monitoradded", "monitorremoved" ]:
+    if event in [ "monitoradded", "monitorremoved", "configreloaded" ]:
         logger.info('Handling hyprland event: ' + event)
         set_monitors()
+
+        ## When disconnecting my laptop, a new workspace is created. We switch back to a default workspace
+        if event == 'monitorremoved':
+            command.exec("hyprctl dispatch workspace 5", True)
+        
+        ## Sometimes, Waybar or wpaperd crashes
+        if event in ['monitoradded', 'monitorremoved']:
+            command.exec("pkill waybar || true && waybar", background = True)
+            command.exec("pkill wpaperd || true && wpaperd -d", background = True)
+
+        
 
 ###############################################################################
 # Handlers of Systemd logind events
@@ -63,5 +76,5 @@ def set_monitors():
         command.exec('hyprctl keyword monitor "eDP-1,disable"')
     else:
         command.exec('hyprctl keyword monitor "eDP-1,preferred,auto,2"')
-        command.exec("brightnessctl -s set 0")
+        # command.exec("brightnessctl -s set 0")
 

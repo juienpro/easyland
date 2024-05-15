@@ -8,7 +8,7 @@ import time
 import os
 from easyland.daemon import Daemon
 
-version = '0.7.5'
+version = '0.7.6'
 
 def import_from_path(path):
     module_name = os.path.basename(path).replace('-', '_').replace('.py', '')
@@ -26,7 +26,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print('Pyland version: ' + version)
+        print('Easyland version: ' + version)
         sys.exit()
 
     if not args.config:

@@ -73,13 +73,14 @@ class Daemon():
         # ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         while True:
-            if ps.returncode != 0:
+            if ps.returncode != 0 and ps.returncode is not None:
                 err = ps.stderr.read().decode("utf-8")
                 logger.error("Error while listening to Hyprland socket: " + err)
                 sys.exit(1)
             for line in iter(ps.stdout.readline, ""):
                 self.last_event_time = time.time()
                 decoded_line = line.decode("utf-8")
+                logger.debug(decoded_line.strip())
                 if '>>' in decoded_line:
                     data = decoded_line.split('>>')
                     self.call_handler('on_hyprland_event', data[0], data[1])

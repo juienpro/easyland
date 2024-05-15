@@ -1,4 +1,10 @@
 
+## v0.7.6  (2024-05-15) 
+
+- Major fix: Idle thread launched several times leading to unexpected events
+- Minor fix: Improvement of the Hyprland config example to restart waybar and wpaperd each time the monitors change
+- Minor fix: Versionning
+
 ## v0.7.5  (2024-05-13) 
 
 - Fix Hyprland socket path (support of Hyprland v0.4)

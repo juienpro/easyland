@@ -21,6 +21,7 @@ class Idle():
         self._idle_notifier = None
         self._seat = None
         self._notifications = []
+        self._notifier_set = False
 
     # def _global_handler_init(self, reg, id_num, iface_name, version):
     #     if iface_name == 'wl_seat':
@@ -32,9 +33,11 @@ class Idle():
         if iface_name == "ext_idle_notifier_v1":
             self._idle_notifier = reg.bind(id_num, ExtIdleNotifierV1, version)
 
-        if self._idle_notifier and self._seat:
+        if self._idle_notifier and self._seat and not self._notifier_set:
+            self._notifier_set = True
             for idx, c in enumerate(self._config):
                 self._notifications.append(None)
+                logger.info("Setting idle notifier for " + str(c[0]) + " seconds")
                 self._notifications[idx] = self._idle_notifier.get_idle_notification(c[0] * 1000, self._seat)
                 self._notifications[idx]._index = idx
                 self._notifications[idx].dispatcher['idled'] = self._idle_notifier_handler
